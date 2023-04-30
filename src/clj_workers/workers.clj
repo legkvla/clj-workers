@@ -102,7 +102,7 @@
           #(send-alert
              (make-simple-alert
                :job-state-hanged-alert
-               (str "Job hanged (" col-name "):" (:id %))
+               (str "Job hanged (" col-name ")")
                worker-id {:id (:id %) :state (:state %)}))
           (mongo/find-all col-name
             {
