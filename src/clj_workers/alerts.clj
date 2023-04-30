@@ -39,7 +39,7 @@
         id (assoc :userId id))
       :params params})
 
-(defn make-simple-alert [alert-type msg action]
+(defn make-simple-alert [alert-type msg action params]
   {
     :notifier notifier
 
@@ -54,7 +54,7 @@
       :environment (env :env-id)
       :language (str "Clojure-" (clojure-version))
       :action action}
-    :params {}})
+    :params (or params {})})
 
 ;Possible values - mongo or errbit
 (def transport :mongo)

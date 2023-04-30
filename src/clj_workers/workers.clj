@@ -103,7 +103,7 @@
              (make-simple-alert
                :job-state-hanged-alert
                (str "Job hanged (" col-name "):" (:id %))
-               worker-id))
+               worker-id {:id (:id %) :state (:state %)}))
           (mongo/find-all col-name
             {
               :state {$in freeze-states}
