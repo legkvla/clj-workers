@@ -1,5 +1,6 @@
 (ns clj-workers.alerts
   (:require
+    [clj-http.client :as client]
     [clj-stacktrace.core :refer [parse-exception]]
     [clj-stacktrace.repl :refer [method-str]]
     [environ.core :refer [env]]
