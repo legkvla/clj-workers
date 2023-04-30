@@ -58,14 +58,14 @@
     :params (or params {})})
 
 ;Possible values - mongo or errbit
-(def transport :mongo)
+(def transport (or (env :alerts-transport) :mongo))
 
-(def host "<errbit or airbrake host>")
+(def host (env :errbit-host))
 (def project "1")
 (def url (str "https://" host "/api/v3/projects/" project "/notices"))
 
 (defn send-alert [alert]
-  (case transport
+  (case (keyword transport)
     :mongo
     (mongo/save :alerts
       (assoc alert :created-at (System/currentTimeMillis)))
