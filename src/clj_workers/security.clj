@@ -49,7 +49,7 @@
       (handler request)
       {:status 401 :body {:error "Unauthorized"}})))
 
-(defn admin-middleware
+(defn mw:admin
   "Middleware used on routes requiring :admin role."
   [handler]
   (fn [request]
