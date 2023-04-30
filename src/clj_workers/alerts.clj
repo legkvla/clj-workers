@@ -1,9 +1,10 @@
-(ns clj-workers.airbrake
+(ns clj-workers.alerts
   (:require
-    [clj-http.client :as client]
     [clj-stacktrace.core :refer [parse-exception]]
     [clj-stacktrace.repl :refer [method-str]]
-    [environ.core :refer [env]]))
+    [environ.core :refer [env]]
+
+    [clj-workers.mongo :as mongo]))
 
 (defn make-error [throwable]
   (let [{:keys [class message trace-elems]} (parse-exception throwable)]
@@ -55,23 +56,30 @@
       :action action}
     :params {}})
 
+;Possible values - mongo or errbit
+(def transport :mongo)
 
-(def host "errbit.lab-twenty.com")
+(def host "<errbit or airbrake host>")
 (def project "1")
 (def url (str "https://" host "/api/v3/projects/" project "/notices"))
 
 (defn send-alert [alert]
-  (client/post
-    url
-    {
-      :accept :json
-      :content-type :json
-      :form-params alert
-      :query-params {:key (env :errbit-api-key)}
-      :save-request? true
-      :debug true
-      :debug-body true
-      :throw-exceptions false}))
+  (case transport
+    :mongo
+    (mongo/save :alerts
+      (assoc alert :created-at (System/currentTimeMillis)))
+    :errbit
+    (client/post
+      url
+      {
+        :accept :json
+        :content-type :json
+        :form-params alert
+        :query-params {:key (env :errbit-api-key)}
+        :save-request? true
+        :debug true
+        :debug-body true
+        :throw-exceptions false})))
 
 (defn request->message
   "Maps the ring request map to the format of the airbrake params"
@@ -91,7 +99,7 @@
     (or params {:query-string query-string})})
 
 ;Ring middleware
-(defn wrap-airbrake [handler]
+(defn wrap-alerts [handler]
   (fn
     ([request]
      (try

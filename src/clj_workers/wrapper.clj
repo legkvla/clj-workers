@@ -1,6 +1,6 @@
 (ns clj-workers.wrapper
   (:require
-    [clj-workers.airbrake :refer [make-alert send-alert]]
+    [clj-workers.alerts :refer [make-alert send-alert]]
     [clojure.tools.logging :refer [error]]
     [metrics.core :refer [default-registry]]
     [metrics.timers :refer [timer] :as tmr]))

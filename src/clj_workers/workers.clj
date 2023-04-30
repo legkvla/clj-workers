@@ -2,7 +2,7 @@
   (:require
     [clojure.tools.logging :refer [info debug]]
 
-    [clj-workers.airbrake :refer [make-simple-alert send-alert]]
+    [clj-workers.alerts :refer [make-simple-alert send-alert]]
     [clj-workers.mongo :as mongo]
     [clj-workers.wrapper :refer [wrap-job wrap-task]]
 
