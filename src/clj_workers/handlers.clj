@@ -19,6 +19,7 @@
     [muuntaja.core :as m]
     [malli.util :as mu]
 
+    [clj-workers.samples.sensors :as sensors]
     [clj-workers.security :refer [mw:token mw:auth check-creds make-token]]
     [clj-workers.wrapper :refer [wrap-handler wrap-task]]))
 
@@ -103,6 +104,8 @@
    {:swagger {:tags ["auth"]}}
    handler:login-token
    handler:me])
+
+
 
 
 (def reitit-config
