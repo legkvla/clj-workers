@@ -11,9 +11,23 @@
   (-> sensor
     (update :state keyword)))
 
-(defn register-sensor [sensor])
+(defn register-sensor [sensor]
+  (mongo/insert :sensors
+    (assoc sensor :state :init)))
 
-(defn backtest-sensor [sensor])
+(defn backtest-sensor [sensor]
+  ;TODO Backtesting call
+  (assoc sensor
+    :anomalies 0
+    :backtesting-started-at (System/currentTimeMillis)
+    :state :backtesting))
+
+(defn poll-sensor-backtest [sensor])    
+
+(defn on-sensor-backtesting-done [sensor]
+  (assoc sensor
+    :backtested-at (System/currentTimeMillis)
+    :state :ready))
 
 (defn poll-sensor [{:keys [anomalies backtested-at] :as sensor}])
 
