@@ -6,7 +6,7 @@
   (println "Init backtest for sensor " sensor))
 
 (defn poll-sensor [{:keys [backtesting-started-at] :as sensor}]
-  (let [ready? (time-passed? backtesting-started-at) (* 60 1000)]
+  (let [ready? (time-passed? backtesting-started-at (* 60 1000))]
     {
       :state (if ready? :ready :bt)
       :new-anomalies
