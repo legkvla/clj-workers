@@ -3,6 +3,7 @@
 
   (:require
     [clj-workers.handlers :refer [app-handlers]]
+    [clj-workers.samples.sensors :refer [start-workers]]
     ; [clj-workers.monitors :refer [start-monitors]]
     [org.httpkit.server :as server]
 
@@ -17,11 +18,11 @@
     (-> app-handlers
        expose-metrics-as-json)
     {:port 3002})
-  (println "server running in port 3002"))
+  (println "server running in port 3002")
 
   ;TODO We need to pause there to allow stale server die
   ; (Thread/sleep (* 3 60 1000))
-  ; (start-workers)
+  (start-workers))
   ; (start-monitors))
 
 (defn -main
