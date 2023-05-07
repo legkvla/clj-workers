@@ -11,6 +11,12 @@
   (-> sensor
     (update :state keyword)))
 
+(defn find-sensor [id]
+  (mongo/find-by-id :sensors id))
+
+(defn find-sensors []
+  (mongo/find-all :sensors))  
+
 (defn register-sensor [sensor]
   (mongo/insert :sensors
     (assoc sensor :state :init)))
