@@ -1,6 +1,6 @@
 (ns clj-workers.monitor
   (:require
-    [gateway.workers :refer [monitor-jobs start-worker]]))
+    [clj-workers.workers :refer [monitor-jobs start-worker]]))
 
 (defn monitor-sensors-workers []
   (start-worker :sensors-monitor 1
