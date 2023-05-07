@@ -1,4 +1,4 @@
-(ns clj-workers.monitor
+(ns clj-workers.monitors
   (:require
     [clj-workers.workers :refer [monitor-jobs start-worker]]))
 
