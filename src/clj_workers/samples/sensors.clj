@@ -1,6 +1,7 @@
 (ns clj-workers.samples.sensors
   (:require
     [clj-workers.mongo :as mongo]
+    [clj-workers.sensor-client :as client]
     [clj-workers.workers
       :refer
       [process-item cleanup-node-simple interval-worker-iteration start-worker]]
@@ -16,20 +17,41 @@
     (assoc sensor :state :init)))
 
 (defn backtest-sensor [sensor]
-  ;TODO Backtesting call
+  (client/init-backtest sensor)
   (assoc sensor
     :anomalies 0
     :backtesting-started-at (System/currentTimeMillis)
     :state :backtesting))
-
-(defn poll-sensor-backtest [sensor])    
 
 (defn on-sensor-backtesting-done [sensor]
   (assoc sensor
     :backtested-at (System/currentTimeMillis)
     :state :ready))
 
-(defn poll-sensor [{:keys [anomalies backtested-at] :as sensor}])
+(defn poll-sensor-backtest [sensor]
+  (let [{:keys [state]} (client/poll-sensor)]
+    (if (= state :ready)
+      (assoc sensor :state :ready)
+      ;else
+      (assoc sensor :state :backtesting))))
+
+(defn poll-sensor [{:keys [anomalies backtested-at] :as sensor}]
+  (let
+    [
+      {:keys [new-anomalies]} (client/poll-sensor sensor)
+      backtesting-needed?
+      (or
+        (> (- (System/currentTimeMillis) backtested-at) (* 3600 1000))
+        (> anomalies 100))]
+    (cond-> sensor
+      backtesting-needed?
+      (assoc :state :init)
+
+      (not backtesting-needed?)
+      (assoc :anomalies (+ anomalies new-anomalies))
+
+      (not backtesting-needed?)
+      (assoc :state :ready))))
 
 (defn poll-sensors-iteration []
   (interval-worker-iteration
