@@ -32,7 +32,7 @@
 (defn poll-sensor-backtest [sensor]
   (let [{:keys [state]} (client/poll-sensor)]
     (if (= state :ready)
-      (assoc sensor :state :ready)
+      (on-sensor-backtesting-done sensor)
       ;else
       (assoc sensor :state :backtesting))))
 
@@ -54,6 +54,18 @@
       (not backtesting-needed?)
       (assoc :state :ready))))
 
+(defn init-sensors-backtest-iteration []
+  (state-worker-iteration
+    :sensors-backtest :sensors
+    :init :processing
+    backtest-sensor coerce-sensor))
+
+(defn poll-sensors-backtest-iteration []
+  (state-worker-iteration
+    :sensors-backtest-poller :sensors
+    :backtesting :processing
+    poll-sensor-backtest coerce-sensor))
+
 (defn poll-sensors-iteration []
   (interval-worker-iteration
     :sensors-poller :sensors
@@ -62,10 +74,16 @@
 
 (defn cleanup-workers []
   (cleanup-node-simple :sensors (env :node-id)
-    #{:processing} :ready))
+    #{:processing :error} :init))
 
 (defn start-workers []
   (cleanup-workers)
+  (mapv
+    #(start-worker "sensors-backtest-initiator" % init-sensors-backtest-iteration)
+    (range 1 5))
+  (mapv
+    #(start-worker "sensors-backtesting-poller" % poll-sensors-backtest-iteration)
+    (range 1 5))
   (mapv
     #(start-worker "sensors-poller" % poll-sensors-iteration)
     (range 1 5)))
