@@ -2,6 +2,7 @@
   (:require
     [clj-workers.mongo :as mongo]
     [clj-workers.sensor-client :as client]
+    [clj-workers.time :refer [time-passed?]]
     [clj-workers.workers
       :refer
       [process-item cleanup-node-simple interval-worker-iteration start-worker]]
@@ -41,7 +42,7 @@
       {:keys [new-anomalies]} (client/poll-sensor sensor)
       backtesting-needed?
       (or
-        (> (- (System/currentTimeMillis) backtested-at) (* 3600 1000))
+        (time-passed? backtested-at) (* 3600 1000)
         (> anomalies 100))]
     (cond-> sensor
       backtesting-needed?
