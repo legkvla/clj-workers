@@ -4,7 +4,7 @@
   (:require
     [clj-workers.handlers :refer [app-handlers]]
     [clj-workers.samples.sensors :refer [start-workers]]
-    ; [clj-workers.monitors :refer [start-monitors]]
+    [clj-workers.monitors :refer [start-monitors]]
     [org.httpkit.server :as server]
 
     [metrics.core :refer [default-registry]]
@@ -21,9 +21,10 @@
   (println "server running in port 3002")
 
   ;TODO We need to pause there to allow stale server die
+  ; you can have this sleep commented if you sure that previous instances killed
   ; (Thread/sleep (* 3 60 1000))
-  (start-workers))
-  ; (start-monitors))
+  (start-workers)
+  (start-monitors))
 
 (defn -main
   "Running server"
