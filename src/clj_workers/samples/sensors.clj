@@ -77,10 +77,12 @@
 (defn start-workers []
   (cleanup-workers)
   (mapv
-    #(workers/start-worker "sensors-backtest-initiator" % init-sensors-backtest-iteration)
+    #(workers/start-worker "sensors-backtest-initiator"
+        % init-sensors-backtest-iteration)
     (range 1 5))
   (mapv
-    #(workers/start-worker "sensors-backtesting-poller" % poll-sensors-backtest-iteration)
+    #(workers/start-worker "sensors-backtesting-poller"
+        % poll-sensors-backtest-iteration)
     (range 1 5))
   (mapv
     #(workers/start-worker "sensors-poller" % poll-sensors-iteration)
