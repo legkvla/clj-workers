@@ -7,9 +7,7 @@
 
     [environ.core :refer [env]]))
 
-(defn coerce-sensor [sensor]
-  (-> sensor
-    (update :state keyword)))
+;These fns called directly
 
 (defn find-sensor [id]
   (mongo/find-by-id :sensors id))
@@ -37,6 +35,11 @@
         true)
       :processing false)))
 
+;Workers
+
+(defn coerce-sensor [sensor]
+  (-> sensor
+    (update :state keyword)))
 
 (defn backtest-sensor [sensor]
   (client/init-backtest sensor)
