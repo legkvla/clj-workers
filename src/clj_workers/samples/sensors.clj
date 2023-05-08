@@ -24,7 +24,7 @@
     (case (keyword state)
       (:init :backtesting :ready)
       (when
-        (process-item sensor :sensors state :pending
+        (workers/process-item sensor :sensors state :pending
           (fn [sensor] (assoc :state :deleted)))
 
         (mongo/delete-by-id :sensors sensor-id)
