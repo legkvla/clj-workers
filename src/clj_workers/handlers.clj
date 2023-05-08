@@ -134,10 +134,9 @@
              (handler
                :delete-sensor
                (fn [{{{:keys [id]} :query} :parameters}]
-                 (sensors/delete-sensor id)
                  {
                    :status 200
-                   :body {:success true}}))}
+                   :body {:success (sensors/delete-sensor id)}}))}
            :post
            {
              :summary "Register sensor"

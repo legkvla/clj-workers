@@ -23,8 +23,20 @@
 
 (defn delete-sensor [sensor-id]
   (let [{:keys [state] :as sensor} (mongo/find-by-id sensor-id)]
-    ;TODO Add lock here
-    (mongo/delete-by-id :sensors sensor-id)))
+    (case (keyword state)
+      (:init :backtesting :ready)
+      (when
+        (process-item sensor :sensors state :pending
+          (fn [sensor] (assoc :state :deleted)))
+
+        (mongo/delete-by-id :sensors sensor-id)
+        true)
+      (:error :deleted)
+      (do
+        (mongo/delete-by-id :sensors sensor-id)
+        true)
+      :processing false)))
+
 
 (defn backtest-sensor [sensor]
   (client/init-backtest sensor)
