@@ -105,7 +105,63 @@
    handler:login-token
    handler:me])
 
+(def handlers:sensors
+  ["/samples"
+        {
+          :swagger {:tags ["samples"]}}
 
+        ["/sensors"
+         {
+           :middleware [mw:token mw:auth]
+           :get
+           {
+             :summary "Get sensor details"
+             :parameters {:query [:map [:id :string]]}
+             ;:responses {200 {:body [:map [:success :boolean]]}}
+             :handler
+             (handler
+               :get-signal
+               (fn [{{{:keys [id]} :query} :parameters}]
+                 {
+                   :status 200
+                   :body (sensors/find-sensor id)}))}
+           :delete
+           {
+             :summary "Stop watching and delete sensor"
+             :parameters {:query [:map [:id :string]]}
+             :responses {200 {:body [:map [:success :boolean]]}}
+             :handler
+             (handler
+               :delete-sensor
+               (fn [{{{:keys [id]} :query} :parameters}]
+                 (sensors/delete-sensor id)
+                 {
+                   :status 200
+                   :body {:success true}}))}
+           :post
+           {
+             :summary "Register sensor"
+             :parameters
+             {
+               :body
+               [:map {:closed true}
+                [:name :string]]}
+
+            :responses
+            {
+              200
+              {
+                :body
+                [:map
+                  [:success :boolean]]}}
+            :handler
+            (handler
+              :register-sensor
+              (fn [{{{:as sensor} :body} :parameters}]
+                (sensors/register-sensor sensor)
+                {
+                  :status 200
+                  :body {:success true}}))}}]])
 
 
 (def reitit-config
@@ -145,7 +201,7 @@
 
 (def router
   (ring/router
-    [handler:swagger handlers:auth]
+    [handler:swagger handlers:auth handlers:sensors]
     reitit-config))
 
 

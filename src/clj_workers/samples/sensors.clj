@@ -15,11 +15,16 @@
   (mongo/find-by-id :sensors id))
 
 (defn find-sensors []
-  (mongo/find-all :sensors))  
+  (mongo/find-all :sensors))
 
 (defn register-sensor [sensor]
   (mongo/insert :sensors
     (assoc sensor :state :init)))
+
+(defn delete-sensor [sensor-id]
+  (let [{:keys [state] :as sensor} (mongo/find-by-id sensor-id)]
+    ;TODO Add lock here
+    (mongo/delete-by-id :sensors sensor-id)))
 
 (defn backtest-sensor [sensor]
   (client/init-backtest sensor)
