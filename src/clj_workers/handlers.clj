@@ -145,22 +145,14 @@
                :body
                [:map {:closed true}
                 [:name :string]]}
-
-            :responses
-            {
-              200
-              {
-                :body
-                [:map
-                  [:success :boolean]]}}
             :handler
             (handler
               :register-sensor
               (fn [{{{:as sensor} :body} :parameters}]
-                (sensors/register-sensor sensor)
+
                 {
                   :status 200
-                  :body {:success true}}))}}]])
+                  :body (sensors/register-sensor sensor)}))}}]])
 
 
 (def reitit-config
