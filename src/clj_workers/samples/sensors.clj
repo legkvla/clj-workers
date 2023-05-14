@@ -17,7 +17,10 @@
 
 (defn register-sensor [sensor]
   (mongo/insert :sensors
-    (assoc sensor :state :init)))
+    (assoc sensor
+      :state :init
+      :node-id (env :node-id)
+      :updated-at (System/currentTimeMillis))))
 
 (defn delete-sensor [sensor-id]
   (let [{:keys [state] :as sensor} (mongo/find-by-id sensor-id)]
@@ -57,7 +60,7 @@
 
 (defn poll-sensor-backtest [sensor]
   (println "Polling sensor backtest: " (:name sensor))
-  (let [{:keys [state]} (client/poll-sensor)]
+  (let [{:keys [state]} (client/poll-sensor sensor)]
     (if (= state :ready)
       (on-sensor-backtesting-done sensor)
       ;else
