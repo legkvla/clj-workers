@@ -7,6 +7,10 @@
 
     [environ.core :refer [env]]))
 
+(defn coerce-sensor [sensor]
+  (-> sensor
+    (update :state keyword)))
+
 ;These fns called directly
 
 (defn find-sensor [id]
@@ -23,12 +27,13 @@
       :updated-at (System/currentTimeMillis))))
 
 (defn delete-sensor [sensor-id]
-  (let [{:keys [state] :as sensor} (mongo/find-by-id sensor-id)]
+  (let [{:keys [state] :as sensor} (mongo/find-by-id :sensors sensor-id)]
     (case (keyword state)
       (:init :backtesting :ready)
       (when
         (workers/process-item sensor :sensors state :pending
-          (fn [sensor] (assoc :state :deleted)))
+          (fn [sensor] (assoc sensor :state :deleted))
+          coerce-sensor)
 
         (mongo/delete-by-id :sensors sensor-id)
         true)
@@ -39,10 +44,6 @@
       :processing false)))
 
 ;Workers
-
-(defn coerce-sensor [sensor]
-  (-> sensor
-    (update :state keyword)))
 
 (defn backtest-sensor [sensor]
   (println "Starting backend sensor: " (:name sensor))
