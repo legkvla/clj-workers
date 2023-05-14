@@ -2,6 +2,7 @@
        :env {
              :admin-token "<api-key>"
              :env-id "dev"
+             :node-id "node-1"
              :mongo-url "mongodb://demo:demo@127.0.0.1/demo"
              ;you can ignore or delete it if you are going to use mongo transport
              :alerts-transport "mongo"
