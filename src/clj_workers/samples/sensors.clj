@@ -42,6 +42,7 @@
     (update :state keyword)))
 
 (defn backtest-sensor [sensor]
+  (println "Starting backend sensor: " (:name sensor))
   (client/init-backtest sensor)
   (assoc sensor
     :anomalies 0
@@ -49,11 +50,13 @@
     :state :backtesting))
 
 (defn on-sensor-backtesting-done [sensor]
+  (println "Backtesting done: " (:name sensor))
   (assoc sensor
     :backtested-at (System/currentTimeMillis)
     :state :ready))
 
 (defn poll-sensor-backtest [sensor]
+  (println "Polling sensor backtest: " (:name sensor))
   (let [{:keys [state]} (client/poll-sensor)]
     (if (= state :ready)
       (on-sensor-backtesting-done sensor)
@@ -61,6 +64,7 @@
       (assoc sensor :state :backtesting))))
 
 (defn poll-sensor [{:keys [anomalies backtested-at] :as sensor}]
+  (println "Polling sensor: " (:name sensor) ", current anomalies: " anomalies)
   (let
     [
       {:keys [new-anomalies]} (client/poll-sensor sensor)
