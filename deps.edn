@@ -1,0 +1,18 @@
+{:paths ["src" "resources"],
+ :deps
+ {org.clojure/clojure {:mvn/version "1.10.3"},
+  buddy/buddy {:mvn/version "2.0.0"},
+  clj-stacktrace/clj-stacktrace {:mvn/version "0.2.8"},
+  clj-time/clj-time {:mvn/version "0.13.0"},
+  clj-http/clj-http {:mvn/version "2.3.0"},
+  environ/environ {:mvn/version "1.1.0"},
+  metosin/jsonista {:mvn/version "0.2.6"},
+  metosin/reitit {:mvn/version "0.5.18"},
+  http-kit/http-kit {:mvn/version "2.3.0"},
+  com.novemberain/monger {:mvn/version "3.5.0"},
+  metrics-clojure/metrics-clojure {:mvn/version "2.10.0"},
+  metrics-clojure-jvm/metrics-clojure-jvm {:mvn/version "2.10.0"},
+  metrics-clojure-ring/metrics-clojure-ring {:mvn/version "2.10.0"},
+  org.clojure/tools.logging {:mvn/version "1.1.0"},
+  org.clojure/tools.trace {:mvn/version "0.7.10"},
+  org.slf4j/slf4j-log4j12 {:mvn/version "1.7.30"}}}
