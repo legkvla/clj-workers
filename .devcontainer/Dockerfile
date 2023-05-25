@@ -1,5 +1,5 @@
 # [Choice] Java version (use -bullseye variants on local arm64/Apple Silicon): 11, 17, 11-bullseye, 17-bullseye, 11-buster, 17-buster
-ARG VARIANT=${templateOption:imageVariant}
+ARG VARIANT=11
 FROM mcr.microsoft.com/devcontainers/java:${VARIANT}
 
 # [Optional] Clojure version
@@ -21,16 +21,16 @@ ENV BOOT_VERSION=2.8.3
 ENV BOOT_CLOJURE_VERSION=${CLOJURE_VERSION}
 
 # [Option] Install Clojure CLI tool
-ARG INSTALL_CLOJURE_CLI="${templateOption:installClojureCli}"
+ARG INSTALL_CLOJURE_CLI="true"
 
 # [Option] Install Boot
-ARG INSTALL_BOOT="${templateOption:installBoot}"
+ARG INSTALL_BOOT="false"
 
 # [Option] Install Leiningen
-ARG INSTALL_LEININGEN="${templateOption:installLeiningen}"
+ARG INSTALL_LEININGEN="true"
 
 # [Option] Install Polylith
-ARG INSTALL_POLYLITH="${templateOption:installPolylith}"
+ARG INSTALL_POLYLITH="false"
 
 RUN if [ "${INSTALL_CLOJURE_CLI}" = "true" ]; then \
     apt-get update \
@@ -68,7 +68,7 @@ RUN if [ "${INSTALL_POLYLITH}" = "true" ]; then \
     && /usr/local/sbin/poly version; fi
 
 # [Choice] Node.js version: none, lts/*, 16, 14, 12, 10
-ARG NODE_VERSION="${templateOption:nodeVersion}"
+ARG NODE_VERSION="none"
 RUN if [ "${NODE_VERSION}" != "none" ]; then su vscode -c "umask 0002 && . /usr/local/share/nvm/nvm.sh && nvm install ${NODE_VERSION} 2>&1"; fi
 
 # [Optional] Uncomment this section to install additional OS packages.
