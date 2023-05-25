@@ -12,9 +12,9 @@
     [environ.core :refer [env]]))
 
 (defn pubkey []
-  (if-let [public-key (env :public-key)] (keys/str->public-key public-key)))
+  (when-let [public-key (env :public-key)] (keys/str->public-key public-key)))
 (defn privkey []
-  (if-let [private-key (env :private-key)] (keys/str->private-key private-key)))
+  (when-let [private-key (env :private-key)] (keys/str->private-key private-key)))
 
 (def token-expiration (t/days 365))
 
